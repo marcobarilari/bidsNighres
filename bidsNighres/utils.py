@@ -6,9 +6,13 @@ from pathlib import Path
 from rich import print
 
 
+def print_to_screen(msg):
+    print(f"[blue]{msg}[/blue]")
+
+
 def move_file(input: str, output: str, dry_run=False):
 
-    print(f"{abspath(input)} --> {abspath(output)}")
+    print(f"[blue]{abspath(input)}[/blue] --> \n[green]{abspath(output)}[/green]\n")
     if not dry_run:
         create_dir_for_file(output)
         os.rename(input, output)

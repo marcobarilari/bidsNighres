@@ -118,6 +118,27 @@ def get_config(config_file="", default="") -> dict:
 def bidsify_skullstrip_output(
     skullstrip_output: dict, layout_in, layout_out, UNIT1, inv2, T1map, dry_run=True
 ) -> dict:
+    """
+
+    .. note::
+
+        Renaming the output of this step will force nighres to rerun
+        the skullstriping because it can't find the file it expects.
+
+    Args:
+        skullstrip_output (dict): [description]
+        layout_in ([type]): [description]
+        layout_out ([type]): [description]
+        UNIT1 ([type]): [description]
+        inv2 ([type]): [description]
+        T1map ([type]): [description]
+        dry_run (bool, optional): [description]. Defaults to True.
+
+    Returns:
+        dict: [description]
+    """
+
+    print("\n")
 
     entities = layout_in.parse_file_entities(UNIT1)
     entities["extension"] = ".nii.gz"
@@ -170,6 +191,17 @@ def bidsify_segment_output(
 
 
 def create_bidsname(layout, filename, filetype: str) -> str:
+    """[summary]
+
+    Args:
+        layout ([type]): [description]
+        filename ([type]): [description]
+        filetype (str): [description]
+
+    Returns:
+        str: [description]
+    """
+
     # filename is path or entities dict
 
     if isinstance(filename, str):

@@ -4,15 +4,13 @@ import nighres
 from rich import print
 
 from bidsNighres.bidsutils import bidsify_skullstrip_output
+from bidsNighres.utils import print_to_screen
+from bidsNighres.utils import return_path_rel_dataset
 
 
 def skullstrip(layout_in, layout_out, this_participant, bids_filter: dict):
 
-    print(f"Processing: {this_participant}")
-
-    # print(layout_in.get_subjects())
-
-    # print(layout_in.get_sessions())
+    print_to_screen(f"\n[bold]Processing: {this_participant}[/bold]")
 
     unit1_files = layout_in.get(
         subject=this_participant,
@@ -41,7 +39,9 @@ def skullstrip(layout_in, layout_out, this_participant, bids_filter: dict):
             regex_search=True,
             **bids_filter["UNIT1"],
         )
-        print(UNIT1)
+        print_to_screen(
+            f"t1 weighted image: {return_path_rel_dataset(UNIT1[0], layout_in.root)}"
+        )
 
         inv2 = layout_in.get(
             return_type="filename",
@@ -50,7 +50,9 @@ def skullstrip(layout_in, layout_out, this_participant, bids_filter: dict):
             regex_search=True,
             **bids_filter["inv2"],
         )
-        print(inv2)
+        print_to_screen(
+            f"second inversion image: {return_path_rel_dataset(inv2[0], layout_in.root)}"
+        )
 
         T1map = layout_in.get(
             return_type="filename",
@@ -59,7 +61,9 @@ def skullstrip(layout_in, layout_out, this_participant, bids_filter: dict):
             regex_search=True,
             **bids_filter["T1map"],
         )
-        print(T1map)
+        print_to_screen(
+            f"t1 map image: {return_path_rel_dataset(T1map[0], layout_in.root)}"
+        )
 
         skullstrip_output = nighres.brain.mp2rage_skullstripping(
             second_inversion=inv2[0],
@@ -89,7 +93,7 @@ def skullstrip(layout_in, layout_out, this_participant, bids_filter: dict):
 
 def segment(layout_out, this_participant, bids_filter: dict, dry_run: False):
 
-    print(f"Processing: {this_participant}")
+    print_to_screen(f"\n[bold]Processing: {this_participant}[/bold]")
 
     # TODO make output path generation more flexible
     sub_entity = "sub-" + this_participant
@@ -104,7 +108,7 @@ def segment(layout_out, this_participant, bids_filter: dict, dry_run: False):
         regex_search=True,
         invalid_filters="allow",
     )
-    print(skullstripped_UNIT1)
+    print_to_screen(skullstripped_UNIT1)
 
     skullstripped_T1map = layout_out.get(
         return_type="filename",
@@ -114,7 +118,7 @@ def segment(layout_out, this_participant, bids_filter: dict, dry_run: False):
         regex_search=True,
         invalid_filters="allow",
     )
-    print(skullstripped_T1map)
+    print_to_screen(skullstripped_T1map)
 
     if not dry_run:
         mgdm_output = nighres.brain.mgdm_segmentation(

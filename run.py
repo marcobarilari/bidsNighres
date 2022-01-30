@@ -16,6 +16,7 @@ from bidsNighres.bidsutils import get_dataset_layout
 from bidsNighres.bidsutils import init_derivatives_layout
 from bidsNighres.segment import segment
 from bidsNighres.segment import skullstrip
+from bidsNighres.utils import print_to_screen
 
 __version__ = open(join(dirname(realpath(__file__)), "version")).read()
 
@@ -117,11 +118,13 @@ def main(
     dry_run,
 ):
 
+    print("\n")
+
     input_datasets = abspath(input_datasets)
-    print(f"Input dataset: {input_datasets}")
+    print_to_screen(f"Input dataset: {input_datasets}")
 
     output_location = abspath(output_location)
-    print(f"Output location: {output_location}")
+    print_to_screen(f"Output location: {output_location}")
 
     if bids_filter_file == "":
         bids_filter = get_bids_filter_config()
