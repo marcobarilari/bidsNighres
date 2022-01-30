@@ -8,8 +8,10 @@ def test_get_dataset_layout_smoke_test():
 
 def test_return_path_rel_dataset():
 
-    file_path = "/home/john/gin/datset/sub-03/func/sub-03_task-rest_space-T1w_desc-preproc_bold.nii.gz"
-    dataset_path = "/home/john/gin/datset"
+    file_path = (
+        "/home/data/sub-03/func/sub-03_task-rest_space-T1w_desc-preproc_bold.nii.gz"
+    )
+    dataset_path = "/home/john/data"
     rel_file_path = return_path_rel_dataset(file_path, dataset_path)
 
     assert (

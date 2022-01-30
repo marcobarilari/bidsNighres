@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 
+from bidsNighres.bidsutils import bidsify_segment_output
 from bidsNighres.bidsutils import bidsify_skullstrip_output
 from bidsNighres.bidsutils import create_bidsname
 from bidsNighres.bidsutils import get_dataset_layout
@@ -87,13 +88,18 @@ def test_bidsify_segment_output():
     layout_out = get_dataset_layout(output_location)
 
     skullstripped_UNIT1 = (
-        "sub-pilot001_ses-001_acq-lores_desc-skullstripped_UNIT1.nii.gz"
+        "sub-01/ses-01/sub-01_ses-01_acq-lores_desc-skullstripped_UNIT1.nii.gz"
     )
 
+    segment_output = {
+        "segmentation": "sub-01_ses-01_mgdm_seg.nii",
+        "labels": "sub-01_ses-01_mgdm_lbls.nii",
+        "memberships": "sub-01_ses-01_mgdm_mems.nii",
+        "distance": "sub-01_ses-01_mgdm_dist.nii",
+    }
+
     segment_new_output = bidsify_segment_output(
-        layout_out=layout_out,
-        UNIT1=skullstripped_UNIT1,
-        T1map=skullstripped_T1map,
+        segment_output, layout_out=layout_out, UNIT1=skullstripped_UNIT1
     )
 
     assert (
@@ -102,27 +108,16 @@ def test_bidsify_segment_output():
     )
     assert (
         os.path.basename(segment_new_output["labels"])
-        == "sub-pilot001_ses-001_acq-lores_desc-labels_probseg.nii.gzz"
+        == "sub-01_ses-01_acq-lores_desc-labels_probseg.nii.gz"
     )
     assert (
         os.path.basename(segment_new_output["memberships"])
-        == "sub-pilot001_ses-001_acq-lores_desc-memberships_probseg.nii.gzz"
+        == "sub-01_ses-01_acq-lores_desc-memberships_probseg.nii.gz"
     )
     assert (
-        os.path.basename(segment_new_output["distance"]) == "sub-01_ses-01_dist.nii.gz"
+        os.path.basename(segment_new_output["distance"])
+        == "sub-01_ses-01_acq-lores_dist.nii.gz"
     )
-
-    # segmentation (niimg): Hard brain segmentation with topological constraints
-    # (if chosen) (_mgdm_seg)
-    #
-    # labels (niimg): Maximum tissue probability labels (_mgdm_lbls)
-    #
-    # memberships (niimg): Maximum tissue probability values,
-    # 4D image where the first dimension shows each voxel’s highest probability
-    # to belong to a specific tissue, the second dimension shows
-    # the second highest probability to belong to another tissue etc. (_mgdm_mems)
-    #
-    # distance (niimg): Minimum distance to a segmentation boundary (_mgdm_dist)
 
 
 def test_parse_unit1():
@@ -172,7 +167,7 @@ def test_parse_T1map():
 def test_parse_desc():
 
     T1map = [
-        "bidsNighres/sub-01/ses-01/anat/sub-01_ses-01_inv-2_part-mag_desc-skullstripped_MP2RAGE.nii.gz"
+        "bidsNighres/sub-01/anat/sub-01_inv-2_part-mag_desc-skullstripped_MP2RAGE.nii.gz"
     ]
 
     input_location = Path.joinpath(Path().resolve(), "derivatives")
@@ -184,7 +179,6 @@ def test_parse_desc():
         "inv": "2",
         "part": "mag",
         "extension": ".nii.gz",
-        "session": "01",
         "description": "skullstripped",
         "suffix": "MP2RAGE",
     }

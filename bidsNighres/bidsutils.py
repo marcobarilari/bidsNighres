@@ -5,7 +5,6 @@ from os.path import join
 from pathlib import Path
 
 from bids import BIDSLayout
-from rich import print
 
 from .utils import create_dir_if_absent
 from .utils import move_file
@@ -117,8 +116,8 @@ def get_config(config_file="", default="") -> dict:
 
 
 def bidsify_skullstrip_output(
-    skullstrip_output, layout_in, layout_out, UNIT1, inv2, T1map, dry_run=True
-):
+    skullstrip_output: dict, layout_in, layout_out, UNIT1, inv2, T1map, dry_run=True
+) -> dict:
 
     entities = layout_in.parse_file_entities(UNIT1)
     entities["extension"] = ".nii.gz"
@@ -139,24 +138,35 @@ def bidsify_skullstrip_output(
     return skullstrip_output
 
 
-# Returns:
+def bidsify_segment_output(
+    segment_output: dict, layout_out, UNIT1, dry_run=True
+) -> dict:
+    """
+    Dictionary collecting outputs under the following keys (suffix of output files in brackets)
 
-# Dictionary collecting outputs under the following keys (suffix of output files in brackets)
+    outputs = ["segmentation", "labels", "memberships", "distance"]
 
-#  outputs = ["segmentation", "labels", "memberships", "distance"]
-#
-#     "segmentation" (niimg): Hard brain segmentation with topological constraints (if chosen)
-#                          (_mgdm_seg)
-#     "labels" (niimg):      Maximum tissue probability labels
-#                          (_mgdm_lbls)
-#     "memberships" (niimg): Maximum tissue probability values,
-#                          4D image where the first dimension shows each voxel’s highest
-#                          probability to belong to a specific tissue,
-#                          the second dimension shows the second highest probability to
-#                          belong to another tissue etc.
-#                         (_mgdm_mems)
-#     "distance" (niimg):   Minimum distance to a segmentation boundary
-#                         (_mgdm_dist)
+        "segmentation" (niimg): Hard brain segmentation with topological constraints (if chosen)
+                            (_mgdm_seg)
+        "labels" (niimg):      Maximum tissue probability labels
+                            (_mgdm_lbls)
+        "memberships" (niimg): Maximum tissue probability values,
+                            4D image where the first dimension shows each voxel’s highest
+                            probability to belong to a specific tissue,
+                            the second dimension shows the second highest probability to
+                            belong to another tissue etc.
+                            (_mgdm_mems)
+        "distance" (niimg):   Minimum distance to a segmentation boundary
+                            (_mgdm_dist)
+    """
+
+    entities = layout_out.parse_file_entities(UNIT1)
+    for key, value in segment_output.items():
+        new_output = create_bidsname(layout_out, entities, filetype=key)
+        move_file(value, new_output, dry_run=dry_run)
+        segment_output[key] = new_output
+
+    return segment_output
 
 
 def create_bidsname(layout, filename, filetype: str) -> str:
