@@ -52,7 +52,7 @@ lint/flake8: ## check style with flake8
 lint/black: ## check style with black
 	black --check bidsNighres tests
 
-lint: lint/flake8 lint/black ## check style
+lint: lint/black lint/flake8  ## check style
 
 test: ## run tests quickly with the default Python
 	pytest

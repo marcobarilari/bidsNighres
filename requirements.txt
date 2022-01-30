@@ -4,3 +4,4 @@ pybids
 black
 rich
 sourcery
+flake8
