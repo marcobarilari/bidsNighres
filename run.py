@@ -149,6 +149,11 @@ def main(
 
         segment(layout_out, participant_label, bids_filter=bids_filter, dry_run=dry_run)
 
+        # TODO plot result after this
+        # Results can get really weird if the DICOM conversion was
+        # done with some software... Hum... SPM
+        # https://github.com/nighres/nighres/issues/153
+
 
 # parser.add_argument('-v', '--version', action='version',
 #                     version='bidsNighRes {}'.format(__version__))
