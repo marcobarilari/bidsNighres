@@ -1,3 +1,7 @@
 [submodule "lib/nighres"]
 	path = lib/nighres
 	url = https://github.com/nighres/nighres.git
+[submodule "pymp2rage"]
+	path = pymp2rage
+	url = https://github.com/Gilles86/pymp2rage.git
+	datalad-url = https://github.com/Gilles86/pymp2rage.git
