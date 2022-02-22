@@ -5,3 +5,6 @@ black
 rich
 sourcery
 flake8
+
+# Fails for now because of an extra " in one file
+# git+https://github.com/Gilles86/pymp2rage.git

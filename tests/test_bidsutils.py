@@ -14,7 +14,7 @@ def test_write_dataset_description():
     output_location = Path().resolve()
     output_location = Path.joinpath(output_location, "derivatives")
 
-    layout_out = init_derivatives_layout(output_location)
+    init_derivatives_layout(output_location)
 
 
 def test_create_bidsname():

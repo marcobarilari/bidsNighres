@@ -3,6 +3,7 @@ from os.path import join
 import nighres
 from rich import print
 
+from bidsNighres.bidsutils import bidsify_segment_output
 from bidsNighres.bidsutils import bidsify_skullstrip_output
 from bidsNighres.utils import print_to_screen
 from bidsNighres.utils import return_path_rel_dataset
@@ -65,30 +66,32 @@ def skullstrip(layout_in, layout_out, this_participant, bids_filter: dict):
             f"t1 map image: {return_path_rel_dataset(T1map[0], layout_in.root)}"
         )
 
-        skullstrip_output = nighres.brain.mp2rage_skullstripping(
-            second_inversion=inv2[0],
-            t1_weighted=UNIT1[0],
-            t1_map=T1map[0],
-            save_data=True,
-            file_name=sub_entity + "_" + ses_entity,
-            output_dir=output_dir,
-        )
+        if not dry_run:
 
-        bidsify_skullstrip_output(
-            skullstrip_output,
-            layout_in=layout_in,
-            layout_out=layout_out,
-            UNIT1=UNIT1[0],
-            inv2=inv2[0],
-            T1map=T1map[0],
-            dry_run=False,
-        )
+            skullstrip_output = nighres.brain.mp2rage_skullstripping(
+                second_inversion=inv2[0],
+                t1_weighted=UNIT1[0],
+                t1_map=T1map[0],
+                save_data=True,
+                file_name=sub_entity + "_" + ses_entity,
+                output_dir=output_dir,
+            )
 
-        # TODO generate JSON for derivatives
-        # import json
-        # data = {'field1': 'value1', 'field2': 3, 'field3': 'field3'}
-        # with open('my_output_file.json', 'w') as ff:
-        #     json.dump(data, ff)
+            bidsify_skullstrip_output(
+                skullstrip_output,
+                layout_in=layout_in,
+                layout_out=layout_out,
+                UNIT1=UNIT1[0],
+                inv2=inv2[0],
+                T1map=T1map[0],
+                dry_run=False,
+            )
+
+            # TODO generate JSON for derivatives
+            # import json
+            # data = {'field1': 'value1', 'field2': 3, 'field3': 'field3'}
+            # with open('my_output_file.json', 'w') as ff:
+            #     json.dump(data, ff)
 
 
 def segment(layout_out, this_participant, bids_filter: dict, dry_run: False):
@@ -103,25 +106,32 @@ def segment(layout_out, this_participant, bids_filter: dict, dry_run: False):
     skullstripped_UNIT1 = layout_out.get(
         return_type="filename",
         subject=this_participant,
+        extension="nii",
         description=["skullstripped"],
-        suffix=bids_filter["UNIT1"]["suffix"],
         regex_search=True,
         invalid_filters="allow",
+        **bids_filter["UNIT1"],
     )
-    print_to_screen(skullstripped_UNIT1)
+    print_to_screen(
+        f"t1 weigthed image: {return_path_rel_dataset(skullstripped_UNIT1[0], layout_out.root)}"
+    )
 
     skullstripped_T1map = layout_out.get(
         return_type="filename",
         subject=this_participant,
+        extension="nii",
         description=["skullstripped"],
-        suffix=bids_filter["T1map"]["suffix"],
         regex_search=True,
         invalid_filters="allow",
+        **bids_filter["T1map"],
     )
-    print_to_screen(skullstripped_T1map)
+    print_to_screen(
+        f"t1 map image: {return_path_rel_dataset(skullstripped_T1map[0], layout_out.root)}"
+    )
 
     if not dry_run:
-        mgdm_output = nighres.brain.mgdm_segmentation(
+
+        segment_output = nighres.brain.mgdm_segmentation(
             contrast_image1=skullstripped_T1map[0],
             contrast_type1="Mp2rage7T",
             contrast_image2=skullstripped_UNIT1[0],
@@ -130,3 +140,13 @@ def segment(layout_out, this_participant, bids_filter: dict, dry_run: False):
             file_name=sub_entity + "_" + ses_entity,
             output_dir=output_dir,
         )
+
+        bidsify_segment_output(
+            segment_output, layout_out, skullstripped_UNIT1[0], dry_run=False
+        )
+
+        # TODO generate JSON for derivatives
+        # import json
+        # data = {'field1': 'value1', 'field2': 3, 'field3': 'field3'}
+        # with open('my_output_file.json', 'w') as ff:
+        #     json.dump(data, ff)

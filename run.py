@@ -131,18 +131,14 @@ def main(
     else:
         bids_filter = get_bids_filter_config(bids_filter_file)
 
+    # TODO add loop for subjects
+
     if action == "skullstrip":
 
         layout_in = get_dataset_layout(input_datasets)
         check_layout(layout_in)
 
         layout_out = init_derivatives_layout(output_location)
-
-        # print(layout.get_subjects())
-
-        # print(layout.get_sessions())
-
-        # TODO add loop for subjects
 
         skullstrip(layout_in, layout_out, participant_label, bids_filter=bids_filter)
 
