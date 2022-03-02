@@ -1,17 +1,19 @@
-import os
 import nighres
 
 from bids import BIDSLayout
 from os.path import join
 from rich import print
 
+from bidsNighres.bidsutils import get_dataset_layout
+
 this_participant = "pilot001"
-this_session = "001"
+this_session = "008"
 
 n_layers = 6
-input_folder = "../../../outputs/derivatives/cpp_spm-preproc"
+input_folder = "../../../outputs/derivatives/bidsNighres"
 
-layout = BIDSLayout(input_folder)
+layout = get_dataset_layout(input_folder)
+# layout = BIDSLayout(input_folder)
 
 print(layout)
 
@@ -57,23 +59,29 @@ maximum_label = layout.get(
     regex_search=True,
 )
 
-output_filename = f"{sub_entity}_{ses_entity}_"
+print(levelset_boundary[0])
+print(segmentation[0])
+print(maximum_membership[0])
+print(maximum_label[0])
+
+output_filename = f"{sub_entity}_{ses_entity}"
 
 # extract left cerebrum
 ROIS = ["right_cerebrum", "left_cerebrum"]
 LABELS = ["RightCerebrum", "LeftCerebrum"]
 
-for roi in ROIS:
+for label, roi in zip(LABELS, ROIS):
     cortex = nighres.brain.extract_brain_region(
-        segmentation=segmentation,
-        levelset_boundary=levelset_boundary,
-        maximum_membership=maximum_membership,
-        maximum_label=maximum_label,
+        segmentation=segmentation[0].path,
+        levelset_boundary=levelset_boundary[0].path,
+        maximum_membership=maximum_membership[0].path,
+        maximum_label=maximum_label[0].path,
         extracted_region=roi,
         save_data=True,
-        file_name=output_filename,
+        file_name=f'{output_filename}_label-{label}',
         output_dir=output_dir,
     )
+
 
     cruise = nighres.cortex.cruise_cortex_extraction(
         init_image=cortex["inside_mask"],
@@ -82,7 +90,7 @@ for roi in ROIS:
         csf_image=cortex["background_proba"],
         normalize_probabilities=True,
         save_data=True,
-        file_name=output_filename,
+        file_name=f'{output_filename}_label-{label}',
         output_dir=output_dir,
     )
 
@@ -91,6 +99,6 @@ for roi in ROIS:
         outer_levelset=cruise["cgb"],
         n_layers=n_layers,
         save_data=True,
-        file_name=output_filename,
+        file_name=f'{output_filename}_label-{label}',
         output_dir=output_dir,
     )
