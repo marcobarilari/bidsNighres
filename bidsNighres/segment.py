@@ -9,7 +9,9 @@ from bidsNighres.utils import print_to_screen
 from bidsNighres.utils import return_path_rel_dataset
 
 
-def skullstrip(layout_in, layout_out, this_participant, bids_filter: dict):
+def skullstrip(
+    layout_in, layout_out, this_participant, bids_filter: dict, dry_run=False
+):
 
     print_to_screen(f"\n[bold]Processing: {this_participant}[/bold]")
 
@@ -94,7 +96,7 @@ def skullstrip(layout_in, layout_out, this_participant, bids_filter: dict):
             #     json.dump(data, ff)
 
 
-def segment(layout_out, this_participant, bids_filter: dict, dry_run: False):
+def segment(layout_out, this_participant, bids_filter: dict, dry_run=False):
 
     print_to_screen(f"\n[bold]Processing: {this_participant}[/bold]")
 
@@ -132,9 +134,9 @@ def segment(layout_out, this_participant, bids_filter: dict, dry_run: False):
     if not dry_run:
 
         segment_output = nighres.brain.mgdm_segmentation(
-            contrast_image1=skullstripped_T1map[0],
+            contrast_image1=skullstripped_UNIT1[0],
             contrast_type1="Mp2rage7T",
-            contrast_image2=skullstripped_UNIT1[0],
+            contrast_image2=skullstripped_T1map[0],
             contrast_type2="T1map7T",
             save_data=True,
             file_name=sub_entity + "_" + ses_entity,

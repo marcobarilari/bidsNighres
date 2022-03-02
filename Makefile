@@ -50,7 +50,7 @@ clean-test: ## remove test and coverage artifacts
 lint/flake8: ## check style with flake8
 	flake8 bidsNighres tests
 lint/black: ## check style with black
-	black bidsNighres tests
+	black . bidsNighres tests
 
 lint: lint/black lint/flake8  ## check style
 
