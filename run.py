@@ -16,6 +16,7 @@ from bidsNighres.bidsutils import get_dataset_layout
 from bidsNighres.bidsutils import init_derivatives_layout
 from bidsNighres.segment import segment
 from bidsNighres.segment import skullstrip
+from bidsNighres.create_layers import create_layers
 from bidsNighres.utils import print_to_screen
 
 __version__ = open(join(dirname(realpath(__file__)), "version")).read()
@@ -89,8 +90,19 @@ def run(command, env={}):
     help="""
             What to do
             """,
-    type=click.Choice(["genT1map", "skullstrip", "segment"], case_sensitive=False),
+    type=click.Choice(
+        ["genT1map", "skullstrip", "segment", "layer"], case_sensitive=False
+    ),
     required=True,
+)
+@click.option(
+    "--nb-layers",
+    help="""
+
+            """,
+    type=click.IntRange(min=3, max=20, min_open=False, max_open=False, clamp=True),
+    default=6,
+    show_default=True,
 )
 @click.option(
     "--bids-filter-file",
@@ -114,9 +126,13 @@ def main(
     analysis_level,
     participant_label,
     action,
+    nb_layers,
     bids_filter_file,
     dry_run,
 ):
+
+    if analysis_level == "group":
+        raise NotImplementedError("Group level analysis not implemented")
 
     print("\n")
 
@@ -156,6 +172,19 @@ def main(
         # Results can get really weird if the DICOM conversion was
         # done with some software... Hum... SPM
         # https://github.com/nighres/nighres/issues/153
+
+    elif action == "layer":
+
+        layout_out = get_dataset_layout(output_location)
+
+        for participant in participant_label:
+            create_layers(
+                layout_out,
+                participant,
+                bids_filter=bids_filter,
+                nb_layers=nb_layers,
+                dry_run=dry_run,
+            )
 
 
 # parser.add_argument('-v', '--version', action='version',
