@@ -66,7 +66,7 @@ print(maximum_label[0])
 
 output_filename = f"{sub_entity}_{ses_entity}"
 
-# extract left cerebrum
+# extract cerebrums
 ROIS = ["right_cerebrum", "left_cerebrum"]
 LABELS = ["RightCerebrum", "LeftCerebrum"]
 
