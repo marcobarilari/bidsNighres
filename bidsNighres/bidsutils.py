@@ -10,7 +10,7 @@ from .utils import create_dir_if_absent
 from .utils import move_file
 
 
-def get_dataset_layout(dataset_path: str, config = None):
+def get_dataset_layout(dataset_path: str, config=None):
 
     if config is None:
         config = {}
@@ -109,7 +109,7 @@ def get_config(config_file="", default="") -> dict:
 
     if config_file == "" or not Path(config_file).exists():
         my_path = dirname(abspath(__file__))
-        config_file = join(my_path, default)      
+        config_file = join(my_path, default)
 
     if config_file == "" or not Path(config_file).exists():
         return

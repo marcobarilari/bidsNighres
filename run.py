@@ -133,7 +133,7 @@ def main(
 
     # TODO find a better way to parse participant
     # might even require dropping click and switching to argparse
-    participant_label = participant_label.split(' ')
+    participant_label = participant_label.split(" ")
 
     if action == "skullstrip":
 

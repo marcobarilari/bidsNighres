@@ -78,10 +78,9 @@ for label, roi in zip(LABELS, ROIS):
         maximum_label=maximum_label[0].path,
         extracted_region=roi,
         save_data=True,
-        file_name=f'{output_filename}_label-{label}',
+        file_name=f"{output_filename}_label-{label}",
         output_dir=output_dir,
     )
-
 
     cruise = nighres.cortex.cruise_cortex_extraction(
         init_image=cortex["inside_mask"],
@@ -90,7 +89,7 @@ for label, roi in zip(LABELS, ROIS):
         csf_image=cortex["background_proba"],
         normalize_probabilities=True,
         save_data=True,
-        file_name=f'{output_filename}_label-{label}',
+        file_name=f"{output_filename}_label-{label}",
         output_dir=output_dir,
     )
 
@@ -99,6 +98,6 @@ for label, roi in zip(LABELS, ROIS):
         outer_levelset=cruise["cgb"],
         n_layers=n_layers,
         save_data=True,
-        file_name=f'{output_filename}_label-{label}',
+        file_name=f"{output_filename}_label-{label}",
         output_dir=output_dir,
     )

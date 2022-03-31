@@ -8,9 +8,3 @@ flake8
 
 jcc
 ./lib/nighres
-
-# required by pymp2rage
-nilearn
-
-# Fails for now because of an extra " in one file
-# git+https://github.com/Remi-Gau/pymp2rage.git
