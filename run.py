@@ -131,7 +131,9 @@ def main(
     else:
         bids_filter = get_bids_filter_config(bids_filter_file)
 
-    # TODO add loop for subjects
+    # TODO find a better way to parse participant
+    # might even require dropping click and switching to argparse
+    participant_label = participant_label.split(' ')
 
     if action == "skullstrip":
 
@@ -140,13 +142,15 @@ def main(
 
         layout_out = init_derivatives_layout(output_location)
 
-        skullstrip(layout_in, layout_out, participant_label, bids_filter=bids_filter)
+        for participant in participant_label:
+            skullstrip(layout_in, layout_out, participant, bids_filter=bids_filter)
 
     elif action == "segment":
 
         layout_out = get_dataset_layout(output_location)
 
-        segment(layout_out, participant_label, bids_filter=bids_filter, dry_run=dry_run)
+        for participant in participant_label:
+            segment(layout_out, participant, bids_filter=bids_filter, dry_run=dry_run)
 
         # TODO plot result after this
         # Results can get really weird if the DICOM conversion was
