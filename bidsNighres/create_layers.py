@@ -25,7 +25,6 @@ def create_layers(
     for ses in sessions:
 
         this_filter["session"] = ses
-        # this_filter["description"] = ""
 
         print_to_screen(f"[bold] Processing: ses-{ses}[/bold]")
 
@@ -42,6 +41,8 @@ def create_layers(
             regex_search=True,
             **this_filter,
         )
+
+        entities = bf.get_entities()
 
         this_filter["suffix"] = "probseg"
         this_filter["description"] = "memberships"
