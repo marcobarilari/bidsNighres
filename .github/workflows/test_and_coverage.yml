@@ -19,6 +19,9 @@ jobs:
 
     - name: Clone repo
       uses: actions/checkout@v2
+      fetch-depth: 0
+      with:
+          submodules: 'recursive'
 
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
