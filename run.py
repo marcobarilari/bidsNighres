@@ -14,9 +14,9 @@ from bidsNighres.bidsutils import check_layout
 from bidsNighres.bidsutils import get_bids_filter_config
 from bidsNighres.bidsutils import get_dataset_layout
 from bidsNighres.bidsutils import init_derivatives_layout
+from bidsNighres.create_layers import create_layers
 from bidsNighres.segment import segment
 from bidsNighres.segment import skullstrip
-from bidsNighres.create_layers import create_layers
 from bidsNighres.utils import print_to_screen
 
 __version__ = open(join(dirname(realpath(__file__)), "version")).read()

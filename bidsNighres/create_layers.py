@@ -1,11 +1,9 @@
-import nighres
-
 import copy
-
 from os.path import join
 
-from bidsNighres.utils import print_to_screen
+import nighres
 
+from bidsNighres.utils import print_to_screen
 from bidsNighres.utils import return_path_rel_dataset
 
 
