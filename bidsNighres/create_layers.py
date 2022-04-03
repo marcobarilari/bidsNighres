@@ -6,10 +6,24 @@ import nighres
 from bidsNighres.utils import print_to_screen
 from bidsNighres.utils import return_path_rel_dataset
 
+from rich import print
+
 
 def create_layers(
     layout_out, this_participant, bids_filter: dict, nb_layers=6, dry_run=False
 ):
+    """_summary_
+
+    Args:
+        layout_out (_type_): _description_
+        this_participant (_type_): _description_
+        bids_filter (dict): _description_
+        nb_layers (int, optional): _description_. Defaults to 6.
+        dry_run (bool, optional): _description_. Defaults to False.
+
+    Raises:
+        ValueError: _description_
+    """
 
     print_to_screen(f"\n[bold]Processing: sub-{this_participant}[/bold]")
 
@@ -28,82 +42,110 @@ def create_layers(
 
         print_to_screen(f"[bold] Processing: ses-{ses}[/bold]")
 
+        # TODO make sure only the dseg is selected
+        # Could be an issue if we get layer files that are renamed to *_dseg.nii
+
         this_filter["suffix"] = "dseg"
-        segmentation = layout_out.get(
+        segmentations = layout_out.get(
             invalid_filters="allow",
             regex_search=True,
             **this_filter,
         )
 
-        this_filter["suffix"] = "dist"
-        levelset_boundary = layout_out.get(
-            invalid_filters="allow",
-            regex_search=True,
-            **this_filter,
-        )
+        for segmentation_img in segmentations:
 
-        entities = bf.get_entities()
+            entities = segmentation_img.get_entities()
 
-        this_filter["suffix"] = "probseg"
-        this_filter["description"] = "memberships"
-        maximum_membership = layout_out.get(
-            invalid_filters="allow",
-            regex_search=True,
-            **this_filter,
-        )
+            segmentation_img = layout_out.get(
+                invalid_filters="allow",
+                regex_search=True,
+                return_type="filename",
+                **entities,
+            )
 
-        this_filter["description"] = "labels"
-        maximum_label = layout_out.get(
-            invalid_filters="allow",
-            regex_search=True,
-            **this_filter,
-        )
+            if len(segmentation_img) > 1:
+                print(f"[red]{segmentation_img}[/red]")
+                raise ValueError("Only one image there")
 
-        print_to_screen(return_path_rel_dataset(segmentation[0], layout_out.root))
-        print_to_screen(return_path_rel_dataset(levelset_boundary[0], layout_out.root))
-        print_to_screen(return_path_rel_dataset(maximum_membership[0], layout_out.root))
-        print_to_screen(return_path_rel_dataset(maximum_label[0], layout_out.root))
+            entities["suffix"] = "dist"
+            levelset_boundary_img = layout_out.get(
+                invalid_filters="allow",
+                regex_search=True,
+                return_type="filename",
+                **entities,
+            )
 
-        sub_entity = f"sub-{this_participant}"
-        ses_entity = f"ses-{ses}"
-        output_dir = join(layout_out.root, sub_entity, ses_entity, "anat")
-        output_filename = f"{sub_entity}_{ses_entity}"
+            entities["suffix"] = "probseg"
+            entities["description"] = "memberships"
+            max_membership_img = layout_out.get(
+                invalid_filters="allow",
+                regex_search=True,
+                return_type="filename",
+                **entities,
+            )
 
-        # extract cerebrums
-        ROIS = ["right_cerebrum", "left_cerebrum"]
-        LABELS = ["R", "L"]
+            entities["description"] = "labels"
+            max_label_img = layout_out.get(
+                invalid_filters="allow",
+                regex_search=True,
+                return_type="filename",
+                **entities,
+            )
 
-        for label, roi in zip(LABELS, ROIS):
+            print_to_screen(
+                "  " + return_path_rel_dataset(segmentation_img[0], layout_out.root)
+            )
+            print_to_screen(
+                "  "
+                + return_path_rel_dataset(levelset_boundary_img[0], layout_out.root)
+            )
+            print_to_screen(
+                "  " + return_path_rel_dataset(max_membership_img[0], layout_out.root)
+            )
+            print_to_screen(
+                "  " + return_path_rel_dataset(max_label_img[0], layout_out.root)
+            )
 
-            if not dry_run:
+            sub_entity = f"sub-{this_participant}"
+            ses_entity = f"ses-{ses}"
+            output_dir = join(layout_out.root, sub_entity, ses_entity, "anat")
+            output_filename = f"{sub_entity}_{ses_entity}"
 
-                cortex = nighres.brain.extract_brain_region(
-                    segmentation=segmentation[0].path,
-                    levelset_boundary=levelset_boundary[0].path,
-                    maximum_membership=maximum_membership[0].path,
-                    maximum_label=maximum_label[0].path,
-                    extracted_region=roi,
-                    save_data=True,
-                    file_name=f"{output_filename}_hemi-{label}",
-                    output_dir=output_dir,
-                )
+            # extract cerebrums
+            ROIS = ["right_cerebrum", "left_cerebrum"]
+            LABELS = ["R", "L"]
 
-                cruise = nighres.cortex.cruise_cortex_extraction(
-                    init_image=cortex["inside_mask"],
-                    wm_image=cortex["inside_proba"],
-                    gm_image=cortex["region_proba"],
-                    csf_image=cortex["background_proba"],
-                    normalize_probabilities=True,
-                    save_data=True,
-                    file_name=f"{output_filename}_hemi-{label}",
-                    output_dir=output_dir,
-                )
+            for label, roi in zip(LABELS, ROIS):
 
-                nighres.laminar.volumetric_layering(
-                    inner_levelset=cruise["gwb"],
-                    outer_levelset=cruise["cgb"],
-                    n_layers=nb_layers,
-                    save_data=True,
-                    file_name=f"{output_filename}_hemi-{label}",
-                    output_dir=output_dir,
-                )
+                if not dry_run:
+
+                    cortex = nighres.brain.extract_brain_region(
+                        segmentation=segmentation_img[0],
+                        levelset_boundary=levelset_boundary_img[0],
+                        maximum_membership=max_membership_img[0],
+                        maximum_label=max_label_img[0],
+                        extracted_region=roi,
+                        save_data=True,
+                        file_name=f"{output_filename}_hemi-{label}",
+                        output_dir=output_dir,
+                    )
+
+                    cruise = nighres.cortex.cruise_cortex_extraction(
+                        init_image=cortex["inside_mask"],
+                        wm_image=cortex["inside_proba"],
+                        gm_image=cortex["region_proba"],
+                        csf_image=cortex["background_proba"],
+                        normalize_probabilities=True,
+                        save_data=True,
+                        file_name=f"{output_filename}_hemi-{label}",
+                        output_dir=output_dir,
+                    )
+
+                    nighres.laminar.volumetric_layering(
+                        inner_levelset=cruise["gwb"],
+                        outer_levelset=cruise["cgb"],
+                        n_layers=nb_layers,
+                        save_data=True,
+                        file_name=f"{output_filename}_hemi-{label}",
+                        output_dir=output_dir,
+                    )

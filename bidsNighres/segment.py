@@ -11,6 +11,15 @@ from bidsNighres.utils import return_path_rel_dataset
 def skullstrip(
     layout_in, layout_out, this_participant, bids_filter: dict, dry_run=False
 ):
+    """_summary_
+
+    Args:
+        layout_in (_type_): _description_
+        layout_out (_type_): _description_
+        this_participant (_type_): _description_
+        bids_filter (dict): _description_
+        dry_run (bool, optional): _description_. Defaults to False.
+    """
 
     print_to_screen(f"\n[bold]Processing: sub-{this_participant}[/bold]")
 
@@ -55,7 +64,7 @@ def skullstrip(
                 **bids_filter["UNIT1"],
             )
             print_to_screen(
-                f"t1 weighted image: {return_path_rel_dataset(UNIT1[0], layout_in.root)}"
+                f"  t1w image: {return_path_rel_dataset(UNIT1[0], layout_in.root)}"
             )
 
             inv2 = layout_in.get(
@@ -67,7 +76,7 @@ def skullstrip(
                 **bids_filter["inv2"],
             )
             print_to_screen(
-                f"second inversion image: {return_path_rel_dataset(inv2[0], layout_in.root)}"
+                f"  2nd inversion image: {return_path_rel_dataset(inv2[0], layout_in.root)}"
             )
 
             T1map = layout_in.get(
@@ -79,7 +88,7 @@ def skullstrip(
                 **bids_filter["T1map"],
             )
             print_to_screen(
-                f"t1 map image: {return_path_rel_dataset(T1map[0], layout_in.root)}"
+                f"  t1map image: {return_path_rel_dataset(T1map[0], layout_in.root)}"
             )
 
             if not dry_run:
@@ -111,6 +120,14 @@ def skullstrip(
 
 
 def segment(layout_out, this_participant, bids_filter: dict, dry_run=False):
+    """_summary_
+
+    Args:
+        layout_out (_type_): _description_
+        this_participant (_type_): _description_
+        bids_filter (dict): _description_
+        dry_run (bool, optional): _description_. Defaults to False.
+    """
 
     print_to_screen(f"\n[bold]Processing: sub-{this_participant}[/bold]")
 
@@ -141,7 +158,7 @@ def segment(layout_out, this_participant, bids_filter: dict, dry_run=False):
             **bids_filter["UNIT1"],
         )
         print_to_screen(
-            f"t1 weigthed image: {return_path_rel_dataset(skullstripped_UNIT1[0], layout_out.root)}"
+            f"  t1w image: {return_path_rel_dataset(skullstripped_UNIT1[0], layout_out.root)}"
         )
 
         skullstripped_T1map = layout_out.get(
@@ -155,7 +172,7 @@ def segment(layout_out, this_participant, bids_filter: dict, dry_run=False):
             **bids_filter["T1map"],
         )
         print_to_screen(
-            f"t1 map image: {return_path_rel_dataset(skullstripped_T1map[0], layout_out.root)}"
+            f"  t1map image: {return_path_rel_dataset(skullstripped_T1map[0], layout_out.root)}"
         )
 
         if not dry_run:
