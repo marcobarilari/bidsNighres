@@ -155,6 +155,6 @@ def create_layers(
                         layering,
                         layout_out,
                         segmentation_img,
-                        hemi_label= label,
+                        hemi_label=label,
                         nb_layers=nb_layers,
                     )
