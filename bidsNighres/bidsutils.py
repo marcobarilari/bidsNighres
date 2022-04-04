@@ -205,9 +205,11 @@ def bidsify_layering_output(
     entities["hemi"] = hemi_label
     entities["description"] = f"{nb_layers}layers"
     for key, value in layering_output.items():
-        new_output = create_bidsname(layout_out, entities, filetype=key)
-        move_file(value, new_output, dry_run=dry_run)
-        layering_output[key] = new_output
+
+        if key in ["cgb", "gwb", "layers"]:
+            new_output = create_bidsname(layout_out, entities, filetype=key)
+            move_file(value, new_output, dry_run=dry_run)
+            layering_output[key] = new_output
 
     return layering_output
 

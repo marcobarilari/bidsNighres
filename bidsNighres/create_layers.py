@@ -151,10 +151,13 @@ def create_layers(
                         output_dir=output_dir,
                     )
 
+                    outputs = {**cruise, **layering}
+
                     bidsify_layering_output(
-                        layering,
+                        outputs,
                         layout_out,
-                        segmentation_img,
+                        segmentation_img[0],
                         hemi_label=label,
                         nb_layers=nb_layers,
+                        dry_run=dry_run,
                     )
