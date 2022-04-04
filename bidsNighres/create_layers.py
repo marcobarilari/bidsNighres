@@ -5,6 +5,7 @@ import nighres
 
 from bidsNighres.utils import print_to_screen
 from bidsNighres.utils import return_path_rel_dataset
+from bidsNighres.bidsutils import bidsify_layering_output
 
 from rich import print
 
@@ -141,11 +142,19 @@ def create_layers(
                         output_dir=output_dir,
                     )
 
-                    nighres.laminar.volumetric_layering(
+                    layering = nighres.laminar.volumetric_layering(
                         inner_levelset=cruise["gwb"],
                         outer_levelset=cruise["cgb"],
                         n_layers=nb_layers,
                         save_data=True,
                         file_name=f"{output_filename}_hemi-{label}",
                         output_dir=output_dir,
+                    )
+
+                    bidsify_layering_output(
+                        layering,
+                        layout_out,
+                        segmentation_img,
+                        hemi_label= label,
+                        nb_layers=nb_layers,
                     )
