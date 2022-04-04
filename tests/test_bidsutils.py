@@ -3,6 +3,7 @@ from pathlib import Path
 
 from bidsNighres.bidsutils import bidsify_segment_output
 from bidsNighres.bidsutils import bidsify_skullstrip_output
+from bidsNighres.bidsutils import bidsify_layering_output
 from bidsNighres.bidsutils import create_bidsname
 from bidsNighres.bidsutils import get_dataset_layout
 from bidsNighres.bidsutils import init_derivatives_layout
@@ -117,6 +118,41 @@ def test_bidsify_segment_output():
     assert (
         os.path.basename(segment_new_output["distance"])
         == "sub-01_ses-01_acq-lores_dist.nii.gz"
+    )
+
+
+def test_bidsify_layering_output():
+
+    output_location = Path.joinpath(Path().resolve(), "derivatives")
+    layout_out = get_dataset_layout(output_location)
+
+    segmentation_img = "sub-01/ses-01/sub-01_ses-01_acq-r0p75_dseg.nii.gz"
+
+    layering_output = {
+        "cgb": "sub-pilot001_ses-001_cruise-cgb.nii.gz",
+        "gwb": "sub-pilot001_ses-001_cruise-gwb.nii.gz",
+        "layers": "sub-pilot001_ses-001_layering-layers.nii.gz",
+    }
+
+    layering_new_output = bidsify_layering_output(
+        layering_output,
+        layout_out=layout_out,
+        dseg=segmentation_img,
+        hemi_label="R",
+        nb_layers=6,
+    )
+
+    assert (
+        os.path.basename(layering_new_output["cgb"])
+        == "sub-01_ses-01_acq-r0p75_hemi-R_desc-CsfGm_lvlset.nii.gz"
+    )
+    assert (
+        os.path.basename(layering_new_output["gwb"])
+        == "sub-01_ses-01_acq-r0p75_hemi-R_desc-GmWm_lvlset.nii.gz"
+    )
+    assert (
+        os.path.basename(layering_new_output["layers"])
+        == "sub-01_ses-01_acq-r0p75_hemi-R_desc-6layers_dseg.nii.gz"
     )
 
 

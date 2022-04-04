@@ -3,6 +3,8 @@ from os.path import abspath
 from os.path import dirname
 from pathlib import Path
 
+from nighres.utils import _output_dir_4saving, _fname_4saving
+
 from rich import print
 
 
@@ -42,3 +44,24 @@ def return_path_rel_dataset(file_path: str, dataset_path: str) -> str:
     rel_path = file_path.replace(dataset_path, "")
     rel_path = rel_path[1:]
     return rel_path
+
+
+def expected_nighres_output(
+    rootfile,
+    suffix,
+    file_name=None,
+    output_dir=None,
+):
+
+    output_dir = _output_dir_4saving(output_dir, file_name)
+
+    output_file = os.path.join(
+        output_dir,
+        _fname_4saving(
+            file_name=file_name,
+            rootfile=rootfile,
+            suffix=suffix,
+        ),
+    )
+
+    return output_file

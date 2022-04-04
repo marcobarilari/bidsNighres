@@ -1,8 +1,11 @@
 {
     "mask": "sub-{subject}[/ses-{session}]/anat/sub-{subject}[_ses-{session}][_acq-{acquisition}][_ce-{ceagent}][_rec-{reconstruction}][_inv-{inv}][_part-{part}]_desc-brain_mask{extension<.nii|.nii.gz|.json>|.nii.gz}",
     "skullstripped": "sub-{subject}[/ses-{session}]/anat/sub-{subject}[_ses-{session}][_acq-{acquisition}][_ce-{ceagent}][_rec-{reconstruction}][_inv-{inv}][_part-{part}]_desc-skullstripped_{suffix}{extension<.nii|.nii.gz|.json>|.nii.gz}",
-    "labels": "sub-{subject}[/ses-{session}]/anat/sub-{subject}[_ses-{session}][_acq-{acquisition}][_ce-{ceagent}][_rec-{reconstruction}][_inv-{inv}][_part-{part}]_desc-labels_probseg{extension<.nii|.nii.gz|.json>|.nii.gz}",
-    "memberships": "sub-{subject}[/ses-{session}]/anat/sub-{subject}[_ses-{session}][_acq-{acquisition}][_ce-{ceagent}][_rec-{reconstruction}][_inv-{inv}][_part-{part}]_desc-memberships_probseg{extension<.nii|.nii.gz|.json>|.nii.gz}",
-    "segmentation": "sub-{subject}[/ses-{session}]/anat/sub-{subject}[_ses-{session}][_acq-{acquisition}][_ce-{ceagent}][_rec-{reconstruction}][_inv-{inv}][_part-{part}]_dseg{extension<.nii|.nii.gz|.json>|.nii.gz}",
-    "distance": "sub-{subject}[/ses-{session}]/anat/sub-{subject}[_ses-{session}][_acq-{acquisition}][_ce-{ceagent}][_rec-{reconstruction}][_inv-{inv}][_part-{part}]_dist{extension<.nii|.nii.gz|.json>|.nii.gz}"
+    "labels": "sub-{subject}[/ses-{session}]/anat/sub-{subject}[_ses-{session}][_acq-{acquisition}][_rec-{reconstruction}]_desc-labels_probseg{extension<.nii|.nii.gz|.json>|.nii.gz}",
+    "memberships": "sub-{subject}[/ses-{session}]/anat/sub-{subject}[_ses-{session}][_acq-{acquisition}][_rec-{reconstruction}]_desc-memberships_probseg{extension<.nii|.nii.gz|.json>|.nii.gz}",
+    "segmentation": "sub-{subject}[/ses-{session}]/anat/sub-{subject}[_ses-{session}][_acq-{acquisition}][_rec-{reconstruction}]_dseg{extension<.nii|.nii.gz|.json>|.nii.gz}",
+    "distance": "sub-{subject}[/ses-{session}]/anat/sub-{subject}[_ses-{session}][_acq-{acquisition}][_rec-{reconstruction}]_dist{extension<.nii|.nii.gz|.json>|.nii.gz}",
+    "cgb": "sub-{subject}[/ses-{session}]/anat/sub-{subject}[_ses-{session}][_acq-{acquisition}][_rec-{reconstruction}][_hemi-{hemi}]_desc-CsfGm_lvlset{extension<.nii|.nii.gz|.json>|.nii.gz}",
+    "gwb": "sub-{subject}[/ses-{session}]/anat/sub-{subject}[_ses-{session}][_acq-{acquisition}][_rec-{reconstruction}][_hemi-{hemi}]_desc-GmWm_lvlset{extension<.nii|.nii.gz|.json>|.nii.gz}",
+    "layers": "sub-{subject}[/ses-{session}]/anat/sub-{subject}[_ses-{session}][_acq-{acquisition}][_rec-{reconstruction}][_hemi-{hemi}]_desc-{description}_dseg{extension<.nii|.nii.gz|.json>|.nii.gz}"
 }

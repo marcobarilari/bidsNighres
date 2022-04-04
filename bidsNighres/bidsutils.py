@@ -192,6 +192,26 @@ def bidsify_segment_output(
     return segment_output
 
 
+def bidsify_layering_output(
+    layering_output: dict,
+    layout_out,
+    dseg,
+    hemi_label: str,
+    nb_layers: int,
+    dry_run=True,
+) -> dict:
+
+    entities = layout_out.parse_file_entities(dseg)
+    entities["hemi"] = hemi_label
+    entities["description"] = f"{nb_layers}layers"
+    for key, value in layering_output.items():
+        new_output = create_bidsname(layout_out, entities, filetype=key)
+        move_file(value, new_output, dry_run=dry_run)
+        layering_output[key] = new_output
+
+    return layering_output
+
+
 def create_bidsname(layout, filename, filetype: str) -> str:
     """[summary]
 
