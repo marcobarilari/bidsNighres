@@ -77,7 +77,7 @@ def create_layers(
             )
 
             entities["suffix"] = "probseg"
-            entities["description"] = "memberships"
+            entities["desc"] = "memberships"
             max_membership_img = layout_out.get(
                 invalid_filters="allow",
                 regex_search=True,
@@ -85,7 +85,7 @@ def create_layers(
                 **entities,
             )
 
-            entities["description"] = "labels"
+            entities["desc"] = "labels"
             max_label_img = layout_out.get(
                 invalid_filters="allow",
                 regex_search=True,
